@@ -36,7 +36,15 @@ def preprocess_recipes(repertoire_path, sample_size=None):
             .str.replace(r"[\"']", "", regex=True)  # enlève les guillemets anglais simples et doubles
             .str.replace(", ", "|")  # remplace virgules avec |
         )
-        
+    # nettoyer la colonne des tags de la même façon qu'ingredients
+    if 'tags' in data.columns:
+        data['tags'] = (
+            data['tags']
+            .str.strip("[]")
+            .str.replace(r"[\"']", "", regex=True)
+            .str.replace(", ", "|")
+        )
+
     # échantillonnage si nécessaire
     if sample_size is None:
         data.to_csv(output_recipes_file, index=False)
@@ -44,7 +52,7 @@ def preprocess_recipes(repertoire_path, sample_size=None):
     else:
         if len(data) <= sample_size:
             data.to_csv(output_recipes_file, index=False)
-            print(f"\nPas d'échantillonage. sample_size inférieur au nombre de rangées dans RAW_recipes.csv. Sauvegarde de {output_recipes_file}")
+            print(f"\nPas d'échantillonage. sample_size supérieur au nombre de rangées dans RAW_recipes.csv. Sauvegarde de {output_recipes_file}")
         else:
             sampled_data = data.sample(n=sample_size, random_state=99)
             sampled_data.to_csv(output_recipes_file, index=False)
@@ -60,7 +68,6 @@ def preprocess_recipes(repertoire_path, sample_size=None):
 #   - 'RAW_recipes.csv'
 #   - 'RAW_interactions.csv
 
-#TODO change à un input() pour demander le chemin et sample_size à l'utilisateur
 while True:
     repertoire_path = input("Entrez le chemin du répertoire contenant les fichiers CSV (repertoire d'importation Neo4j):\n ").strip()
     if os.path.isdir(repertoire_path):
