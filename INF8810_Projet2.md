@@ -44,10 +44,13 @@ set r.recipe_name =  COALESCE(row.name, "Not Available"),
     r.minutes = tointeger(row.minutes),
     r.date = date(row.submitted),
     r.description = row.description,
-    r.n_steps = tointeger(row.n_steps)
+    r.n_steps = tointeger(row.n_steps),
+    r.tags = case when row.tags IS NOT NULL then split (row.tags, '|')
+                else []
+                end
 
 with r,row
-unwind split(row.ingredients, ',') as ingredient
+unwind split(row.ingredients, '|') as ingredient
 merge (i:Ingredient {ingredient_name: trim(ingredient)})
 merge (r)-[:HAS_INGREDIENT]->(i)
 ```
