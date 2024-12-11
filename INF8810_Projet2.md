@@ -3,6 +3,8 @@
 ## Partie 1: Données
 
 ### 1. Origine des données
+https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions
+
 ### 2. Contexte du jeu de données
 ### 3. Prétraitement
 - raw_recipes.csv
