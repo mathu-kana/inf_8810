@@ -7,18 +7,18 @@ https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactio
 
 ### 2. Contexte du jeu de données
 ### 3. Prétraitement
-- raw_recipes.csv
-- raw_reviews.csv
+- RAW_recipes.csv
+- RAW_interactions.csv
 
 Les deux fichiers .csv sont téléchargés et sauvegardés localement dans le repertoire d'importation par défaut de Neo4j à partir du dossier compressé téléchargé sur Kaggle.
 
-- Exécuter `pretraitement.py` avec les chemins des fichiers selon votre repertoire
+- Exécuter `pretraitement.py` avec le chemin de votre repertoire d'importantion Neo4j
 
 ## Partie 2: Chargement dans Neo4j
 
 ### 1. Données à charger sur Neo4j
 * recipes.csv
-* reviews.csv
+* interactions.csv
 
 
 
@@ -26,7 +26,7 @@ Les deux fichiers .csv sont téléchargés et sauvegardés localement dans le re
 ### 3. Chargement des données utilisant Neo4j
 
 #### Configuration avec Neo4j Desktop
-- Les fichiers `recipes.csv` et `reviews.csv` doivent être dans le repertoire d"importation de Neo4j.
+- Les fichiers `recipes.csv` et `interactions.csv` doivent être dans le repertoire d"importation de Neo4j.
 - <i>Start</i> un projet sur Neo4j Desktop et ouvrir avec une fenêtre Neo4j.
 
 - Réinitialiser la base de données
@@ -60,10 +60,10 @@ merge (t:Tag {tag_name: trim(tag)})
 merge (r)-[:HAS_TAG]->(t)
 ```
 
-- Charger les données de `reviews.csv`
+- Charger les données de `interactions.csv`
 
 ```
-load csv with headers from 'file:///reviews.csv' as row
+load csv with headers from 'file:///interactions.csv' as row
 merge (u:User {user_id: tointeger(row.user_id)})
 with u, row
 match (r:Recipe {recipe_id: TOINTEGER(row.recipe_id)})
