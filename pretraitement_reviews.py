@@ -1,7 +1,5 @@
 import pandas as pd
 
-#TODO changer le tout en fonction et input ce sont les path vers les fichiers
-
 def preprocess_reviews(recipes_file, reviews_file, filtered_reviews_file):
     # chargement des fichiers .csv d'entrée en dataframe
     recipes_data = pd.read_csv(recipes_file)
@@ -19,6 +17,13 @@ def preprocess_reviews(recipes_file, reviews_file, filtered_reviews_file):
     return
 
 #inputs
-recipes_file = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import/sampled_recipes.csv'
-reviews_file = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import/reviews.csv'
-output_file = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import/filtered_reviews.csv'
+#TODO changer les paths
+# Chemins des fichiers doivent être ceux aux fichiers dans le repertoire d'importation de Neo4j
+# recipes_file = 'recipes.csv'
+# reviews_file = 'raw_reviews.csv'
+# output_file = 'reviews.csv'
+recipes_file = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import/recipes.csv'
+reviews_file = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import/raw_reviews.csv'
+output_file = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import/reviews.csv'
+
+preprocess_reviews(recipes_file, reviews_file, output_file)

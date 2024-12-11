@@ -1,10 +1,16 @@
-# INF_8810 Projet 2
+# INF8810 Projet 2
 
 ## Partie 1: Données
 
 ### 1. Origine des données
 ### 2. Contexte du jeu de données
 ### 3. Prétraitement
+- raw_recipes.csv
+- raw_reviews.csv
+
+Les deux fichiers .csv sont téléchargés et sauvegardés localement dans le repertoire d'importation par défaut de Neo4j à partir du dossier compressé téléchargé sur Kaggle.
+
+- Exécuter `pretraitement.py` avec les chemins des fichiers selon votre repertoire
 
 ## Partie 2: Chargement dans Neo4j
 
@@ -12,7 +18,7 @@
 * recipes.csv
 * reviews.csv
 
-Les deux fichiers .csv sont téléchargés et sauvegardés localement dans le repertoire d'importation par défaut de Neo4j à partir du téléchargement du dossier compressé sur Kaggle. 
+
 
 ### 2. Traitements/modifications lors du chargement
 ### 3. Chargement des données utilisant Neo4j
@@ -28,12 +34,9 @@ detach delete n
 ```
 - Charger les données de `recipes.csv`
 
-.recipes.csv
-
-.sampled_recipes.csv
 
 ```
-load csv with headers from 'file:///sampled_recipes.csv' as row 
+load csv with headers from 'file:///recipes.csv' as row 
 merge (r:Recipe {recipe_id: tointeger(row.id)})
 set r.recipe_name =  COALESCE(row.name, "Not Available"),
     r.minutes = tointeger(row.minutes),
@@ -42,23 +45,23 @@ set r.recipe_name =  COALESCE(row.name, "Not Available"),
     r.n_steps = tointeger(row.n_steps)
 
 with r,row
-unwind split(row.tags, ',') as tag
-merge (t:Tag {tag_name: trim(tag)})
-merge (r)-[:HAS_TAG]->(t)
-
-with r,row
 unwind split(row.ingredients, ',') as ingredient
 merge (i:Ingredient {ingredient_name: trim(ingredient)})
 merge (r)-[:HAS_INGREDIENT]->(i)
 ```
+
+Note: j'ai enlever les noeuds Tag pour l'instant (entre merge noeuds Recipe et merge Ingredient)
+```
+with r,row
+unwind split(row.tags, ',') as tag
+merge (t:Tag {tag_name: trim(tag)})
+merge (r)-[:HAS_TAG]->(t)
+```
+
 - Charger les données de `reviews.csv`
 
-.reviews.csv
-
-.filtered_reviews.csv à partir de sample_recipes.csv
-
 ```
-load csv with headers from 'file:///filtered_reviews.csv' as row
+load csv with headers from 'file:///reviews.csv' as row
 merge (u:User {user_id: tointeger(row.user_id)})
 with u, row
 match (r:Recipe {recipe_id: TOINTEGER(row.recipe_id)})
