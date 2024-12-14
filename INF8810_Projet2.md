@@ -1,5 +1,14 @@
 # INF8810 Projet 2
 
+Membres de l'équipe:
+- Mathura Kanapathippillai, KANM18619701
+- Imed Eddine Lakehal, LAKI63260006  
+- Andres Felipe Ordonez Bustos, ORDA11119408
+
+Remise: 8 décembre 2024
+
+Cours: INF8810 Automne 2024
+
 ## Partie 1: Données
 
 ### 1. Origine des données
