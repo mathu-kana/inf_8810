@@ -3,6 +3,8 @@
 ## Partie 1: Données
 
 ### 1. Origine des données
+
+
 https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions
 
 ### 2. Contexte du jeu de données
@@ -78,8 +80,28 @@ set lien.rating = tointeger(row.rating)
 ### 1. Recommandation proposée
 *qu'est-ceq qui est recoomandé, à qui faites vous cette recommandation.
 decreivez en detail approche e votre requête et code dans rapport*
+
 ### 2. Requête pour faire une recommandation
+
 #### 1. Approche filtrage collaboratif
+```
+match (p1:User {user_id: 1072593})-[x:REVIEWED]->(r:Recipe)<-[y:REVIEWED]-(p2:User)
+with p1, p2, r,
+    sum(x.rating * y.rating) as xyDotProduct,
+    sqrt(reduce(xDot = 0.0, a in collect(x.rating) | xDot + a^2)) as xLength,
+    sqrt(reduce(yDot = 0.0, b in collect(y.rating) | yDot + b^2)) as yLength
+where xLength > 0 and yLength > 0
+with p1, p2, xyDotProduct / (xLength * yLength) as sim
+order by sim desc
+
+match (p2)-[:REVIEWED]->(rec:Recipe)
+where not (p1)-[:REVIEWED]->(rec)
+return rec.recipe_name as recommandation,rec.description as description, sim as cosinusScore
+limit 5
+
+```
+
+Cette approche fonctionne s'il y a assez de recettes communément évaluées par notre utilisateur d'intérêt `p1` et d'autres utilisateurs `p2`. Dans le cas où il n'y a pas assez d'évaluations, on peut utiliser une approche basée contenu. Cette approche est donnée ci-dessous et expliquée dans la section "3. Approche de la requête de recommandation et le code > 2. Approche basée contenu
 
 #### 2. Approche basée contenu
 ```
@@ -105,6 +127,42 @@ limit 5
 
 ### 3. Approche de la requête de recommandation et le code
 #### 1. Approche filtrage collaboratif
+1. On cherche une recette `r` que utilisateur `p1` avec user_id: `1072593` a évalué et qu'un autre utilisateur `p2` a aussi évalué. On cherche donc les utilisateurs qui ont aussi évalué les recettes que `p1` a évaluées.`x` contient la propriété: rating que `p1` a donné à cette recette, et `y` contient le rating que `p2` a donné à cette même recette.
+```
+match (p1:User {user_id: 1072593})-[x:REVIEWED]->(r:Recipe)<-[y:REVIEWED]-(p2:User)
+```
+2. Pour une recette `r` que `p1` et `p2` ont évalué, on calcule le dot product des vecteurs `x` et `y`, et les valeurs `xLength` et `yLength` pour les vecteurs de rating `x` et `y` respectivement afin de pouvoir calculer la métrique de similarité Cosinus.
+```
+with p1, p2, r,
+    sum(x.rating * y.rating) as xyDotProduct,
+    sqrt(reduce(xDot = 0.0, a in collect(x.rating) | xDot + a^2)) as xLength,
+    sqrt(reduce(yDot = 0.0, b in collect(y.rating) | yDot + b^2)) as yLength
+```
+3. Puisqu'il est possible d'avoir des ratings de 0 pour les recettes que `p1` et `p2` ont évalué, il faut éliminer ces cas pour ne faire de division par 0 dans la prochaine étape.
+```
+where xLength > 0 and yLength > 0
+```
+4. On calcule `sim`, la métrique de similarité Cosinus et on peut classer les `p2` selon leur similarité avec `p1`.
+```
+with p1, p2, xyDotProduct / (xLength * yLength) as sim
+order by sim desc
+```
+5. On cherche les recettes à recommander `rec` que `p2` ont évalué, mais qui n'ont pas été évaluées par `p1`. On retourne les top 5 recettes recommandées avec leur description et leur score Cosinus.
+```
+match (p2)-[:REVIEWED]->(rec:Recipe)
+where not (p1)-[:REVIEWED]->(rec)
+return rec.recipe_name as recommandation,rec.description as description, sim as cosinusScore
+limit 5
+```
+Ex.
+
+recommandation: "szechuan noodles with spicy beef sauce" 
+
+description: "tired of using ground beef the same old way? try this spicy dish! feel free to double the sauce if you like it really saucy! update: the hoisin sauce is quite sweet, so you might start off with just a little and work your way up!"  
+
+cosinusScore: 1.0
+
+
 #### 2. Approche basée contenu
 
 1. Pour l'utilisateur avec le user_id: `1072593`, on cherche toutes les recettes qu'il a évalué: `reviewedRecipes`.
