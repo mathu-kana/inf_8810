@@ -70,8 +70,7 @@ with u, row
 match (r:Recipe {recipe_id: TOINTEGER(row.recipe_id)})
 merge (u)-[lien:REVIEWED]->(r)
 
-set lien.rating = tointeger(row.rating),
-    lien.review_date = date(row.date)
+set lien.rating = tointeger(row.rating)
 ```
 
 ## Partie 3: Recommandation
