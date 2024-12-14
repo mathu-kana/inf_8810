@@ -41,12 +41,23 @@ le repertoire d'importation de Neo4j.
 ## Partie 2: Chargement dans Neo4j
 
 ### 1. Données à charger sur Neo4j
+
+Il faut mettre ces deux fichiers ci-dessous dans votre repertoire d'importation Neo4j.
 * recipes.csv
 * interactions.csv
 
 
-
 ### 2. Traitements/modifications lors du chargement
+
+Lors du chargement des données aucun traitement n'est fait. Ces deux lignes lors du chargement permet de gérer les valeurs NA dans la colonnes des noms des recettes, et s'il n'y a pas de tags dans la colonne tags.
+
+```
+set r.recipe_name =  COALESCE(row.name, "Not Available")
+```
+```
+r.tags = case when row.tags IS NOT NULL then split (row.tags, '|')
+                else []
+```
 ### 3. Chargement des données utilisant Neo4j
 
 #### Configuration avec Neo4j Desktop
@@ -59,9 +70,6 @@ match(n)
 detach delete n
 ```
 - Charger les données de `recipes.csv`
-
-Pour 5000 recettes échantillonées dans recipes.csv, voici le nombre de noeuds et liens créés:
-> Added 9241 labels, created 9241 nodes, set 39241 properties, created 45652 relationships, completed after 88940 ms.
 
 ```
 load csv with headers from 'file:///recipes.csv' as row 
@@ -80,12 +88,12 @@ unwind split(row.ingredients, '|') as ingredient
 merge (i:Ingredient {ingredient_name: trim(ingredient)})
 merge (r)-[:HAS_INGREDIENT]->(i)
 ```
+Pour 5000 recettes échantillonées dans recipes.csv, voici le nombre de noeuds et liens créés:
+> Added 9241 labels, created 9241 nodes, set 39241 properties, created 45652 relationships, completed after 88940 ms.
 
+<br>
 
 - Charger les données de `interactions.csv`
-
-Suite au chargement de ces données, les noeuds et liens suivants ont été ajoutés:
-> Added 12288 labels, created 12288 nodes, set 84195 properties, created 23969 relationships, completed after 249342 ms.
 
 ```
 load csv with headers from 'file:///interactions.csv' as row
@@ -96,6 +104,8 @@ merge (u)-[lien:REVIEWED]->(r)
 
 set lien.rating = tointeger(row.rating)
 ```
+Suite au chargement de ces données, les noeuds et liens suivants ont été ajoutés:
+> Added 12288 labels, created 12288 nodes, set 84195 properties, created 23969 relationships, completed after 249342 ms.
 
 ## Partie 3: Recommandation
 
