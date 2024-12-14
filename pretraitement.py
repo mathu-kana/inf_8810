@@ -8,18 +8,22 @@ def preprocess_reviews(recipes_file, reviews_file, output_reviews_file):
     recipes_data = pd.read_csv(recipes_file)
     reviews_data = pd.read_csv(reviews_file)
 
+    # supprimer les colonnes non-utilisées
+    col_a_supprimer = ['date', 'review']
+    filtered_reviews = reviews_data.drop(columns=col_a_supprimer, errors='ignore')
+
     # récupérer les id recette
     recipe_ids = set(recipes_data['id'])
 
     # filtrer RAW_interactions.csv afin de garder les reviews pertinents aux recettes dans recipes.csv
-    filtered_reviews = reviews_data[reviews_data['recipe_id'].isin(recipe_ids)]
+    filtered_reviews = filtered_reviews[filtered_reviews['recipe_id'].isin(recipe_ids)]
     filtered_reviews.to_csv(output_reviews_file, index=False) # sauvegarde
 
     print(f"\nNombre de rangées dans 'interactions.csv': {len(filtered_reviews)}.")
     print(f"Sauvegarde de: {output_reviews_file}.")
     return
 
-def preprocess_recipes(repertoire_path, sample_size=None):
+def preprocess(repertoire_path, sample_size=None):
     # chemins aux fichiers
     input_recipes_file = os.path.join(repertoire_path, 'RAW_recipes.csv')
     output_recipes_file = os.path.join(repertoire_path, 'recipes.csv')
@@ -27,23 +31,21 @@ def preprocess_recipes(repertoire_path, sample_size=None):
     output_reviews_file = os.path.join(repertoire_path, 'interactions.csv')
 
     data = pd.read_csv(input_recipes_file) # charger les recettes en Dataframe
-    
-    # nettoyer la colonne des ingrédients
-    if 'ingredients' in data.columns:
-        data['ingredients'] = (
-            data['ingredients']
-            .str.strip("[]")  # enlève les crochets
-            .str.replace(r"[\"']", "", regex=True)  # enlève les guillemets anglais simples et doubles
-            .str.replace(", ", "|")  # remplace virgules avec |
-        )
-    # nettoyer la colonne des tags de la même façon qu'ingredients
-    if 'tags' in data.columns:
-        data['tags'] = (
-            data['tags']
-            .str.strip("[]")
-            .str.replace(r"[\"']", "", regex=True)
-            .str.replace(", ", "|")
-        )
+
+    # supprimer les colonnes non-utilisées
+    col_a_supprimer = ['contributor_id','nutrition']
+    data = data.drop(columns=col_a_supprimer, errors='ignore')
+
+    #TODO turn to function
+    col_a_nettoyer = ['ingredients','tags']
+
+    for col in col_a_nettoyer:
+        if col in data.columns:
+            data[col] = (data[col]
+                .str.strip("[]")  # enlève les crochets
+                .str.replace(r'["\']', "", regex=True)  # enlève les guillemets anglais simples et doubles
+                .str.replace(", ", "|")  # remplace virgules avec |
+            )
 
     # échantillonnage si nécessaire
     if sample_size is None:
@@ -93,6 +95,6 @@ while True:
 # # chemin du repertoire d'importation de Neo4j
 # repertoire_path = '/Users/mathu/Desktop/uqam/Trimestre_4-5/inf8810/import'
 # sample_size = 100
-# # preprocess_recipes(repertoire_path)
+# # preprocess(repertoire_path)
 
-preprocess_recipes(repertoire_path, sample_size)
+preprocess(repertoire_path, sample_size)
