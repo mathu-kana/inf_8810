@@ -4,10 +4,11 @@
 
 ### 1. Origine des données
 
-
-https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions
+Nos données proviennent de l'ensemble de données "Food.com Recipe & Review Data" du répertoire des datasets des systèmes de recommandation [Ref. Julian McAuley, UCSD](https://cseweb.ucsd.edu/~jmcauley/datasets.html#foodcom). Un dossier compressé avec l'ensemble de données est téléchargable à partir du [lien sur Kaggle](https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions). Nous utilisons les données des fichiers `RAW_recipes.com` et `RAW_interactions.csv` du dossier compressé.
 
 ### 2. Contexte du jeu de données
+Ce sont des données sur plus de 180 000 recettes et 700 000 évaluations (reviews) de recettes provenant de Food.com (source: [Food.com Recipes and Interactions, Kaggle](https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions)). `RAW_recipes.com` et `RAW_interactions.csv` nous donnent des informations sur les recettes et sur les évaluations laissées par des utilisateurs.
+
 ### 3. Prétraitement
 - RAW_recipes.csv
 - RAW_interactions.csv
