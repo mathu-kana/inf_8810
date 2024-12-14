@@ -71,8 +71,7 @@ match (r:Recipe {recipe_id: TOINTEGER(row.recipe_id)})
 merge (u)-[lien:REVIEWED]->(r)
 
 set lien.rating = tointeger(row.rating),
-    lien.review_date = date(row.date),
-    lien.review = row.review
+    lien.review_date = date(row.date)
 ```
 
 ## Partie 3: Recommandation
@@ -81,8 +80,9 @@ set lien.rating = tointeger(row.rating),
 *qu'est-ceq qui est recoomandé, à qui faites vous cette recommandation.
 decreivez en detail approche e votre requête et code dans rapport*
 ### 2. Requête pour faire une recommandation
+#### 1. Approche filtrage collaboratif
 
-1. Approche basée contenu
+#### 2. Approche basée contenu
 ```
 match (u:User {user_id: 1072593})-[:REVIEWED]->(r:Recipe)
 with u, collect(r) AS reviewedRecipes
@@ -105,7 +105,8 @@ limit 5
 ```
 
 ### 3. Approche de la requête de recommandation et le code
-#### 1. Approche basée contenu
+#### 1. Approche filtrage collaboratif
+#### 2. Approche basée contenu
 
 1. Pour l'utilisateur avec le user_id: `1072593`, on cherche toutes les recettes qu'il a évalué: `reviewedRecipes`.
 ```
