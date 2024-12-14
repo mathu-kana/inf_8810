@@ -110,8 +110,9 @@ Suite au chargement de ces données, les noeuds et liens suivants ont été ajou
 ## Partie 3: Recommandation
 
 ### 1. Recommandation proposée
-*qu'est-ceq qui est recoomandé, à qui faites vous cette recommandation.
-decreivez en detail approche e votre requête et code dans rapport*
+Notre projet fait une recommandation de recette à un utilisateur donné (en fournissant son user_id). Une approche de filtrage collaboratif qui est basé sur l'utilisateur est utilisée avec la métrique du score de similarité Cosinus. 5 top recettes sont recommandées à l'utilisateur selon le score Cosinus.
+
+Dans le cas où pour une utilisateur donné, il n'y a pas assez d'intéractions avec d'autres utilisateurs (peu de recettes évaluées communément), une approche basée contenu est utilisé en créant un score de similitude entre recettes selon les ingrédients, minutes de préparation et nombre d'étapes.
 
 ### 2. Requête pour faire une recommandation
 
