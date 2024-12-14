@@ -43,9 +43,9 @@ le repertoire d'importation de Neo4j.
 
 #### Détails du prétraitement
 - `RAW_recipes.csv` sera filtré (sauvegardé comme `recipes.csv`) pour garder un échantillon de recettes de taille désirée
-- Les colonnes non-utilisés sont enlevées.
-- Les colonnes ['ingredients','tags'] sont nettoyés pour enlever les symboles [] " ' et remplacer les virgules qui séparent chaque éléments par | pour faciliter la séparation des éléments dans Neo4j.
-- `RAW_interactions.csv` est filtré (sauvegardé comme `interactions.csv`) pour ne que garder les évaluations (reviews) qui sont pertinents à `recipes.csv`.
+- Les colonnes non-utilisées sont enlevées.
+- Les colonnes ['ingredients','tags'] sont nettoyées pour enlever les symboles [] " ' et remplacer les virgules qui séparent chaque éléments par | pour faciliter la séparation des éléments dans Neo4j.
+- `RAW_interactions.csv` est filtré (sauvegardé comme `interactions.csv`) pour ne que garder les évaluations (reviews) qui sont pertinentes à `recipes.csv`.
 
 ## Partie 2: Chargement dans Neo4j
 
@@ -56,7 +56,7 @@ Il faut mettre ces deux fichiers ci-dessous dans votre repertoire d'importation 
 * interactions.csv
 
 
-### 2. Traitements/modifications lors du chargement
+### 2. Traitements ou modifications lors du chargement
 
 Lors du chargement des données aucun traitement n'est fait. Ces deux lignes lors du chargement permet de gérer les valeurs NA dans la colonnes des noms des recettes, et s'il n'y a pas de tags dans la colonne tags.
 
@@ -119,9 +119,9 @@ Suite au chargement de ces données, les noeuds et liens suivants ont été ajou
 ## Partie 3: Recommandation
 
 ### 1. Recommandation proposée
-Notre projet fait une recommandation de recette à un utilisateur donné (en fournissant son user_id). Une approche de filtrage collaboratif qui est basé sur l'utilisateur est utilisée avec la métrique du score de similarité Cosinus. 5 top recettes sont recommandées à l'utilisateur selon le score Cosinus.
+Notre projet fait une recommandation de recette à un utilisateur donné (en fournissant son user_id). Une approche de filtrage collaboratif, basé sur l'utilisateur, est utilisée avec la métrique du score de similarité Cosinus. 5 top recettes sont recommandées à l'utilisateur selon le score Cosinus.
 
-Dans le cas où pour une utilisateur donné, il n'y a pas assez d'intéractions avec d'autres utilisateurs (peu de recettes évaluées communément), une approche basée contenu est utilisé en créant un score de similitude entre recettes selon les ingrédients, minutes de préparation et nombre d'étapes.
+Dans le cas où pour un utilisateur donné, il n'y a pas assez d'intéractions avec d'autres utilisateurs (peu de recettes évaluées communément), une approche basée contenu est utilisé en créant un score de similitude entre recettes selon les ingrédients, minutes de préparation et nombre d'étapes.
 
 ### 2. Requête pour faire une recommandation
 
@@ -143,7 +143,7 @@ limit 5
 
 ```
 
-Cette approche fonctionne s'il y a assez de recettes communément évaluées par notre utilisateur d'intérêt `p1` et d'autres utilisateurs `p2`. Dans le cas où il n'y a pas assez d'évaluations, on peut utiliser une approche basée contenu. Cette approche est donnée ci-dessous et expliquée dans la section "3. Approche de la requête de recommandation et le code > 2. Approche basée contenu
+Cette approche fonctionne s'il y a assez de recettes communément évaluées par notre utilisateur d'intérêt `p1` et d'autres utilisateurs `p2`. Dans le cas où il n'y a pas assez d'évaluations, on peut utiliser une approche basée contenu. Cette approche est donnée ci-dessous et expliquée dans la section: 3. Approche de la requête de recommandation et le code, 2. Approche basée contenu
 
 #### 2. Approche basée contenu
 ```
@@ -169,7 +169,7 @@ limit 5
 
 ### 3. Approche de la requête de recommandation et le code
 #### 1. Approche filtrage collaboratif
-1. On cherche une recette `r` que utilisateur `p1` avec user_id: `1072593` a évalué et qu'un autre utilisateur `p2` a aussi évalué. On cherche donc les utilisateurs qui ont aussi évalué les recettes que `p1` a évaluées.`x` contient la propriété: rating que `p1` a donné à cette recette, et `y` contient le rating que `p2` a donné à cette même recette.
+1. On cherche une recette `r` que utilisateur `p1` avec user_id: `1072593` a évalué et qu'un autre utilisateur `p2` a aussi évalué. On cherche donc les utilisateurs qui ont aussi évalué les recettes que `p1` a évaluées. `x` contient la propriété: rating que `p1` a donné à cette recette, et `y` contient le rating que `p2` a donné à cette même recette.
 ```
 match (p1:User {user_id: 1072593})-[x:REVIEWED]->(r:Recipe)<-[y:REVIEWED]-(p2:User)
 ```
