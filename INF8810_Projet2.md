@@ -10,12 +10,33 @@ Nos données proviennent de l'ensemble de données "Food.com Recipe & Review Dat
 Ce sont des données sur plus de 180 000 recettes et 700 000 évaluations (reviews) de recettes provenant de Food.com (source: [Food.com Recipes and Interactions, Kaggle](https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions)). `RAW_recipes.com` et `RAW_interactions.csv` nous donnent des informations sur les recettes et sur les évaluations laissées par des utilisateurs.
 
 ### 3. Prétraitement
-- RAW_recipes.csv
-- RAW_interactions.csv
 
-Les deux fichiers .csv sont téléchargés et sauvegardés localement dans le repertoire d'importation par défaut de Neo4j à partir du dossier compressé téléchargé sur Kaggle.
+Pour le prétraitement, il faut exécuter le script Python `pretraitement.py`.
 
-- Exécuter `pretraitement.py` avec le chemin de votre repertoire d'importantion Neo4j
+
+- L'exécution de ce script Python permettra de télécharger le dossier compressé de
+l'ensemble de données sur Kaggle dans ce repertoire.
+
+- Le dossier sera décompressé. Il contient `RAW_recipes.csv` et `RAW_interactions.csv`
+
+- Puisque `RAW_recipes.csv` contient plus de 200k rangées, vous devez entrer en ligne 
+de commande la taille de l'échantillon (nombre de recettes à garder) selon vos
+ressources computationnelles, ou vous pouvez rien mettre et faire Enter pour utiliser la totalité des données. La valeur 5000 est recommandée pour une mémoire RAM de 8 Gb.
+
+En ligne de commande:
+
+>Entrez la taille de l'échantillon ou laissez vide: 
+
+- Le prétraitement des données sera fait et les fichiers `recipes.csv` et
+`interactions.csv` seront sauvegardés dans ce repertoire. Veuillez les déplacer vers
+le repertoire d'importation de Neo4j.
+
+
+#### Détails du prétraitement
+- `RAW_recipes.csv` sera filtré (sauvegardé comme `recipes.csv`) pour garder un échantillon de recettes de taille désirée
+- Les colonnes non-utilisés sont enlevées.
+- Les colonnes ['ingredients','tags'] sont nettoyés pour enlever les symboles [] " ' et remplacer les virgules qui séparent chaque éléments par | pour faciliter la séparation des éléments dans Neo4j.
+- `RAW_interactions.csv` est filtré (sauvegardé comme `interactions.csv`) pour ne que garder les évaluations (reviews) qui sont pertinents à `recipes.csv`.
 
 ## Partie 2: Chargement dans Neo4j
 
